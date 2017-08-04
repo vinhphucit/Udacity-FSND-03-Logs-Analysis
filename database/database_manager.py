@@ -13,7 +13,7 @@ class DatabaseManager:
     # This method is used to get connection to database
     def get_connection(self):
 #        db = psycopg2.connect(database=DATABASE_NAME)
-        db = psycopg2.connect(database=self.DATABASE_NAME, user=self.DATABASE_USER, password=self.DATABASE_PASSWORD)
+        db = psycopg2.connect(database=self.DATABASE_NAME)
         return db
 
     # This method is used for all queries
