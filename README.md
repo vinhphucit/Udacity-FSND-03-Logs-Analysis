@@ -28,5 +28,5 @@ Either way, you will end up with a new directory containing the VM files. Change
 `psql -d news -f newsdata.sql`
 
 ### Run Project
-From Source Code Directory run this command
+From Source Code Directory in Virtual Machine run this command
 `python3 ./analysis_log.py`
