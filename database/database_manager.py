@@ -8,11 +8,10 @@ class DatabaseManager:
     
     QUERY_POPULAR_THREE_ARTICLES = "select a.title, ratingtable.total from articles a join (select a.slug, count(*) total from log l join articles a on '/article/' || a.slug = l.path GROUP BY a.slug order by total desc) ratingtable on a.slug = ratingtable.slug order by total desc limit 3"
     QUERY_POPULAR_AUTHORS = "select au.name, tableauthorlog.totalview from authors au join (select author, sum(tablearticlelog.total) totalview from (select a.author, ratingtable.total from articles a join (select a.slug, count(*) total from log l join articles a on '/article/' || a.slug = l.path GROUP BY a.slug order by total desc) ratingtable on a.slug = ratingtable.slug order by total desc) tablearticlelog group by author) tableauthorlog on au.id = tableauthorlog.author order by totalview desc"
-    QUERY_ERROR_REQUEST = "select onlydate, errorpercent from (select successfultable.onlydate , round( CAST(float8 (failtable.count::float/(successfultable.count+failtable.count)) as numeric), 2) as errorpercent from (select status, to_char(time, 'YYYY-MM-DD') onlydate, count(*) from log where status = '200 OK' group by status, onlydate) as successfultable, (select status, to_char(time, 'YYYY-MM-DD') onlydate, count(*) from log where status != '200 OK' group by status, onlydate ) as failtable where successfultable.onlydate = failtable.onlydate order by onlydate) as errorlogtable where errorpercent > 0.01"
+    QUERY_ERROR_REQUEST = "select to_char(date, 'FMMonth FMDD, YYYY'), round(100*err/total) as ratio from (select time::date as date, count(*) as total, sum((status != '200 OK')::int)::float as err from log group by date) as errors where err/total > 0.01"
 
     # This method is used to get connection to database
     def get_connection(self):
-#        db = psycopg2.connect(database=DATABASE_NAME)
         db = psycopg2.connect(database=self.DATABASE_NAME)
         return db
 
